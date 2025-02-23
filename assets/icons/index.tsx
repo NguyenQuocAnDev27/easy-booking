@@ -1,0 +1,58 @@
+import { theme } from "@/constants/theme";
+import Search from "./Search";
+import ArrowLeft from "./ArrowLeft";
+import User from "./User";
+import Lock from "./Lock";
+import Mail from "./Mail";
+
+// Define an object that maps icon names to components
+const icons = {
+  search: Search,
+  arrowLeft: ArrowLeft,
+  user: User,
+  lock: Lock,
+  mail: Mail,
+} as const;
+
+// Define the type for valid icon names
+type IconName = keyof typeof icons;
+
+// Define the props for the Icon component
+interface IconProps {
+  name: IconName;
+  size?: number;
+  strokeWidth?: number;
+  color?: string;
+  fill?: string;
+}
+
+// Create the Icon component with TypeScript
+const Icon: React.FC<IconProps> = ({
+  name,
+  size = 24,
+  strokeWidth = 1.9,
+  color = theme.colors.textLight,
+  fill = "none",
+  ...props
+}) => {
+  const IconComponent = icons[name];
+
+  // Ensure the icon exists before rendering
+  if (!IconComponent) {
+    console.warn(`Icon "${name}" not found.`);
+    return null;
+  }
+
+  return (
+    <IconComponent
+      height={size}
+      width={size}
+      strokeWidth={strokeWidth}
+      color={color}
+      fill={fill}
+      {...props}
+    />
+  );
+};
+
+export default Icon;

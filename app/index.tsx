@@ -1,14 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import Loading from "@/components/Loading";
+import React from "react";
+import { View } from "react-native";
 
 const index = () => {
   return (
-    <View>
-      <Text>index</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Loading />
     </View>
-  )
-}
+  );
+};
 
-export default index
-
-const styles = StyleSheet.create({})
+export default index;
