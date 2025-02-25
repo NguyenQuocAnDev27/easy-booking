@@ -76,3 +76,12 @@ export const maskPhoneNumber = (phoneNumber: string): string => {
 
   return `${firstPart}${middleMask}${lastPart}`;
 };
+
+export const formatVND = (amount: number): string => {
+  if (isNaN(amount)) return "0 VND";
+
+  return amount
+    .toLocaleString("vi-VN") 
+    .replace(/,/g, ".")
+    + " VND";
+};

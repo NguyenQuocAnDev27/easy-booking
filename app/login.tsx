@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useRef } from "react";
 import { hp, wp } from "@/helpers/common";
 import { theme } from "@/constants/theme";
@@ -9,12 +9,32 @@ import Input from "@/components/Input";
 import Icon from "@/assets/icons";
 import Button from "@/components/Button";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/services/supabaseService";
+import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 
 const login = () => {
   const router = useRouter();
   const mailRef = useRef("");
   const passwordRef = useRef("");
   const { loginUser } = useAuth();
+
+  const onLogin = async () => {
+    let prepareData: SignInWithPasswordCredentials = {
+      email: mailRef.current,
+      password: passwordRef.current,
+    };
+    let { data: {session}, error } = await supabase.auth.signInWithPassword(prepareData);
+
+    // ❌ Error
+    if (error) {
+      console.log("error", error.message);
+      Alert.alert("Đăng nhập", error.message);
+    }
+
+    // ✅ Success
+    console.log("session", session?.user?.id);
+    router.push("/home");
+  };
 
   return (
     <ScreenWarpper>
@@ -46,7 +66,7 @@ const login = () => {
             onChangeText={(text) => (passwordRef.current = text)}
           />
           {/* button */}
-          <Button text="Đăng nhập" onPress={() => {}} />
+          <Button text="Đăng nhập" onPress={onLogin} />
           {/* footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Chưa có tài khoản!</Text>

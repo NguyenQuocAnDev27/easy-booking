@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: "flex-start",
     padding: 5,
-    borderRadius: theme.radius.sm,
-    backgroundColor: 'rgba(0,0,0,0.07)',
+    borderWidth: 1.6,
+    borderColor: "rgba(0,0,0,0.07)",
+    borderRadius: theme.radius.sm * 99,
+    backgroundColor: "white",
   },
 });

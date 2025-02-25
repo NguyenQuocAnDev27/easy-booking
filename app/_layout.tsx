@@ -1,17 +1,26 @@
+import BottomNavigator from "@/components/BottomNavigator";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { NavigatorProvider } from "@/contexts/NavigatorContext";
 import { AppUser } from "@/hooks/authSlice";
 import { store } from "@/hooks/store";
 import { supabase } from "@/services/supabaseService";
+import { getUserData } from "@/services/userService";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { AppState } from "react-native";
+import { Alert, AppState } from "react-native";
 import { Provider } from "react-redux";
+import {
+  getAddressFromCoordinates,
+  NominatimAPIResponse,
+} from "@/services/locationService";
 
 const _layout = () => {
   return (
     <Provider store={store}>
       <AuthProvider>
-        <MainLayout />
+        <NavigatorProvider>
+          <MainLayout />
+        </NavigatorProvider>
       </AuthProvider>
     </Provider>
   );
@@ -19,7 +28,8 @@ const _layout = () => {
 
 const MainLayout = () => {
   const router = useRouter();
-  const { loginUser, logoutUser } = useAuth();
+  const { user, loginUser, logoutUser, updateUser, updateNowLocation } =
+    useAuth();
 
   AppState.addEventListener("change", (state) => {
     if (state === "active") {
@@ -29,13 +39,25 @@ const MainLayout = () => {
     }
   });
 
+  const updatingUserInfo = async (userId: string) => {
+    let res = await getUserData(userId);
+    if (res.success) {
+      updateUser(res.data);
+    } else {
+      Alert.alert("Login", "You are not authenticated!");
+      router.push("/login");
+    }
+  };
+  
+
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
       console.log(`Session -> userId: ${session?.user?.id}`);
 
       if (session) {
         loginUser(session?.user);
-        router.replace("/home");
+        updatingUserInfo(session?.user.id);
+        router.replace("/waiting");
       } else {
         logoutUser();
         router.replace("/welcome");
@@ -43,13 +65,16 @@ const MainLayout = () => {
     });
   }, []);
 
-
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="login" />
       <Stack.Screen name="signUp" />
       <Stack.Screen name="welcome" />
+      <Stack.Screen name="booking" />
+      <Stack.Screen name="payment" />
+      <Stack.Screen name="roomDetail" />
+      <Stack.Screen name="waiting" />
     </Stack>
   );
 };

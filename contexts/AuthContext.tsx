@@ -5,13 +5,23 @@ import {
   AppUser,
   loginSession,
   updateUserInfo,
+  updateLocation,
+  setRoomsSlice,
+  appendRoomsSlice,
+  clearRoomsSlice,
   logout,
 } from "@/hooks/authSlice";
+import { Room } from "@/services/roomService"; // Import Room type
 
 interface AuthContextProps {
   user: AppUser | null;
+  rooms: Room[]; // ✅ Added rooms to Context
   loginUser: (session: AppUser["session"]) => void;
   updateUser: (user: AppUser["detail"]) => void;
+  updateNowLocation: (location: string) => void;
+  updateRooms: (rooms: Room[]) => void;
+  addRooms: (rooms: Room[]) => void; // ✅ Appends new rooms
+  clearRooms: () => void; // ✅ Clears all rooms
   logoutUser: () => void;
 }
 
@@ -19,7 +29,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, rooms } = useSelector((state: RootState) => state.auth);
 
   // Login the user by storing both session and user details
   const loginUser = (session: AppUser["session"]) => {
@@ -33,13 +43,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Update location in the user's data
+  const updateNowLocation = (location: string) => {
+    if (user) {
+      dispatch(updateLocation({ location }));
+    }
+  };
+
+  // ✅ Function to replace rooms
+  const updateRooms = (rooms: Room[]) => {
+    dispatch(setRoomsSlice({ rooms }));
+  };
+
+  // ✅ Function to append more rooms
+  const addRooms = (rooms: Room[]) => {
+    dispatch(appendRoomsSlice({ rooms }));
+  };
+
+  // ✅ Function to clear all rooms
+  const clearRooms = () => {
+    dispatch(clearRoomsSlice());
+  };
+
   // Logout the user
   const logoutUser = () => {
     dispatch(logout());
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginUser, updateUser, logoutUser }}>
+    <AuthContext.Provider value={{ user, rooms, loginUser, updateUser, updateNowLocation, updateRooms, addRooms, clearRooms, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );

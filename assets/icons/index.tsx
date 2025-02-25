@@ -4,6 +4,16 @@ import ArrowLeft from "./ArrowLeft";
 import User from "./User";
 import Lock from "./Lock";
 import Mail from "./Mail";
+import FilterHorizontal from "./FilterHorizontal";
+import Call from "./Call";
+import Edit from "./Edit";
+import Camera from "./Camera";
+import Home from "./Home";
+import Heart from "./Heart";
+import Calendar from "./Calendar";
+import Location from "./Location";
+import Star from "./Star";
+import MultiUser from "./MultiUser";
 
 // Define an object that maps icon names to components
 const icons = {
@@ -12,6 +22,16 @@ const icons = {
   user: User,
   lock: Lock,
   mail: Mail,
+  filterHoz: FilterHorizontal,
+  call: Call,
+  camera: Camera,
+  edit: Edit,
+  home: Home,
+  heart: Heart,
+  calendar: Calendar,
+  location: Location,
+  star: Star,
+  multiUser: MultiUser,
 } as const;
 
 // Define the type for valid icon names

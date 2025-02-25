@@ -56,3 +56,47 @@ export const getUserData = async (userId: string): Promise<APIResponse> => {
     };
   }
 };
+
+
+
+export const updateUser = async (user: SupaUser): Promise<APIResponse> => {
+  try {
+    // 🔄️ updating data
+    const { error } = await supabase
+      .from("users")
+      .update({
+        name: user.name,
+        image: user.image,
+        role: 'user',
+        address: user.address,
+        phoneNumber: user.phoneNumber,
+        expoPushToken: user.expoPushToken
+      })
+      .eq("id", user.id);
+
+    // ❌ Error
+    if (error) {
+      console.warn(`Error updating user data for ${user.id}`, error.message);
+      return {
+        success: false,
+        message: "Error updating user data",
+        data: null,
+      };
+    }
+
+    // ✅ Success
+    return {
+      success: true,
+      message: "User data updating successfully",
+      data: user,
+    };
+  } catch (error) {
+    // ❌ Error
+    console.warn(`Error updating user data for ${user.id}`, error);
+    return {
+      success: false,
+      message: "Error updating user data",
+      data: null,
+    };
+  }
+};
