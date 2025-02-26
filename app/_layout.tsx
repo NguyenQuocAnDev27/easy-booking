@@ -79,6 +79,7 @@ const MainLayout = () => {
       <Stack.Screen name="waiting" />
       <Stack.Screen name="editProfile" />
       <Stack.Screen name="roomDetail" />
+      <Stack.Screen name="logout" />
     </Stack>
   );
 };

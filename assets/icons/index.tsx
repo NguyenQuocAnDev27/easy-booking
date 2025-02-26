@@ -23,6 +23,7 @@ import Hotel from "./Hotel";
 import DollarCircle from "./DollarCircle";
 import MinusCircle from "./MinusCircle";
 import PlusCircle from "./PlusCircle";
+import Logout from "./Logout";
 
 // Define an object that maps icon names to components
 const icons = {
@@ -50,6 +51,7 @@ const icons = {
   dollarCircle: DollarCircle,
   minusCircle: MinusCircle,
   plusCircle: PlusCircle,
+  logout: Logout,
 } as const;
 
 // Define the type for valid icon names

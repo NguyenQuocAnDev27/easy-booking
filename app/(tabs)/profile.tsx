@@ -1,5 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { Router, useFocusEffect } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
@@ -9,13 +16,14 @@ import { theme } from "@/constants/theme";
 import Icon from "@/assets/icons";
 import { SupaUser } from "@/services/userService";
 import { hp, maskGmail, maskPhoneNumber, wp } from "@/helpers/common";
+import { supabase } from "@/services/supabaseService";
+import Loading from "@/components/Loading";
 
-// Profile 
+// Profile
 const Profile = () => {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, logoutUser, clearPage, clearRooms } = useAuth();
   const [user, setUser] = useState<SupaUser | null>(null);
   const router = useRouter();
-
   useFocusEffect(
     useCallback(() => {
       setUser(currentUser?.detail || null);
@@ -25,7 +33,22 @@ const Profile = () => {
   return (
     <ScreenWarpper>
       <View style={styles.container}>
-        <ProfileHeader />
+        <ProfileHeader
+          handleLogout={() => {
+            Alert.alert("Trang cá nhân", "Bạn đang đăng xuất đúng chứ?", [
+              {
+                text: "Không phải",
+                onPress: () => {},
+                style: "cancel",
+              },
+              {
+                text: "Đúng vậy",
+                onPress: () => router.push('/logout'),
+                style: "destructive",
+              },
+            ]);
+          }}
+        />
         <AvatarSection user={user} router={router} />
         <UserInfo user={user} />
       </View>
@@ -35,14 +58,32 @@ const Profile = () => {
 
 export default Profile;
 
-// Profile Header 
-const ProfileHeader = () => (
+// Profile Header
+const ProfileHeader = ({ handleLogout }: { handleLogout: () => void }) => (
   <View style={styles.headerContainer}>
     <Text style={styles.headerText}>Trang Cá Nhân</Text>
+    <View
+      style={{
+        position: "absolute",
+        right: 0,
+      }}
+    >
+      <TouchableOpacity onPress={handleLogout}>
+        <View
+          style={{
+            backgroundColor: theme.colors.mistyRose,
+            padding: 5,
+            borderRadius: theme.radius.xxl * 99,
+          }}
+        >
+          <Icon name="logout" color={theme.colors.rose} />
+        </View>
+      </TouchableOpacity>
+    </View>
   </View>
 );
 
-// Avatar Section 
+// Avatar Section
 const AvatarSection = ({
   user,
   router,
@@ -61,7 +102,7 @@ const AvatarSection = ({
   </View>
 );
 
-// User Info 
+// User Info
 const UserInfo = ({ user }: { user: SupaUser | null }) => (
   <View style={styles.userInfoContainer}>
     <View style={styles.userInfoTextContainer}>
@@ -78,7 +119,7 @@ const UserInfo = ({ user }: { user: SupaUser | null }) => (
   </View>
 );
 
-// User Detail 
+// User Detail
 const UserDetail = ({ icon, text }: { icon: any; text: string }) => (
   <View style={styles.info}>
     <Icon name={icon} size={20} color={theme.colors.textLight} />
