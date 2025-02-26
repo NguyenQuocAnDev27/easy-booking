@@ -279,13 +279,6 @@ const editProfile = () => {
                 </>
               )}
             </View>
-            {/* <Input
-              icon={<Icon name="location" />}
-              placeholder="Enter your address"
-              value={`${selectedProvince || ""} - ${selectedDistrict || ""}`}
-              editable={false}
-              containerStyle={{backgroundColor: theme.colors.lightGray2}}
-            /> */}
             {/* submit */}
             <Button text="Cập nhật" onPress={onSubmit} />
             <View style={isKeyboardShow ? { height: hp(25) } : {}}></View>
@@ -301,6 +294,7 @@ export default editProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: hp(2),
     paddingHorizontal: wp(4),
   },
   avatarContainer: {

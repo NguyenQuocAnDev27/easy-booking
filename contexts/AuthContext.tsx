@@ -10,26 +10,34 @@ import {
   appendRoomsSlice,
   clearRoomsSlice,
   logout,
+  doGoToNextPage,
+  doClearPage,
+  doToggleLoadingMoreRooms,
 } from "@/hooks/authSlice";
-import { Room } from "@/services/roomService"; // Import Room type
+import { Room } from "@/services/roomService";
 
 interface AuthContextProps {
   user: AppUser | null;
-  rooms: Room[]; // ✅ Added rooms to Context
+  rooms: Room[];
+  page: number;
+  loadingMoreRooms: boolean;
   loginUser: (session: AppUser["session"]) => void;
   updateUser: (user: AppUser["detail"]) => void;
   updateNowLocation: (location: string) => void;
   updateRooms: (rooms: Room[]) => void;
-  addRooms: (rooms: Room[]) => void; // ✅ Appends new rooms
-  clearRooms: () => void; // ✅ Clears all rooms
+  addRooms: (rooms: Room[]) => void;
+  clearRooms: () => void;
   logoutUser: () => void;
+  goToNextPage: () => void;
+  clearPage: () => void;
+  toggleLoadingMoreRooms: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
-  const { user, rooms } = useSelector((state: RootState) => state.auth);
+  const { user, rooms, page, loadingMoreRooms } = useSelector((state: RootState) => state.auth);
 
   // Login the user by storing both session and user details
   const loginUser = (session: AppUser["session"]) => {
@@ -50,17 +58,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // ✅ Function to replace rooms
+  //  Function to replace rooms
   const updateRooms = (rooms: Room[]) => {
     dispatch(setRoomsSlice({ rooms }));
   };
 
-  // ✅ Function to append more rooms
+  //  Function to append more rooms
   const addRooms = (rooms: Room[]) => {
     dispatch(appendRoomsSlice({ rooms }));
   };
 
-  // ✅ Function to clear all rooms
+  //  Function to clear all rooms
   const clearRooms = () => {
     dispatch(clearRoomsSlice());
   };
@@ -70,8 +78,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     dispatch(logout());
   };
 
+  const goToNextPage = () => {
+    dispatch(doGoToNextPage());
+  };
+
+  const clearPage = () => {
+    dispatch(doClearPage());
+  };
+
+  const toggleLoadingMoreRooms = () => {
+    dispatch(doToggleLoadingMoreRooms());
+  };
   return (
-    <AuthContext.Provider value={{ user, rooms, loginUser, updateUser, updateNowLocation, updateRooms, addRooms, clearRooms, logoutUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        rooms,
+        page,
+        loadingMoreRooms,
+        loginUser,
+        updateUser,
+        updateNowLocation,
+        updateRooms,
+        addRooms,
+        clearRooms,
+        logoutUser,
+        goToNextPage,
+        clearPage,
+        toggleLoadingMoreRooms,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -15,46 +15,56 @@ import UserOptionsBar from "@/components/UserOptionsBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { getRooms, numberRoomReturn, Room } from "@/services/roomService";
 import RoomCard from "@/components/RoomCard";
-
-let page = 0;
-
-// Task tối: sửa useState loadingMore vào useAuth vì khi chuyển tab thì nó sẽ reload true ban đầu -> load lại -> sai
-// cả page cũng vậy
+import Loading from "@/components/Loading";
+import { useRouter } from "expo-router";
 
 const home = () => {
-  const { user, rooms, addRooms } = useAuth();
+  const {
+    user,
+    rooms,
+    addRooms,
+    page,
+    goToNextPage,
+    clearPage,
+    loadingMoreRooms,
+    toggleLoadingMoreRooms,
+  } = useAuth();
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(true);
   const inputRef = useRef(null);
+  const [loadingFull, setLoadingFull] = useState(false);
+  const router = useRouter();
 
-  console.log(`Your location: ${user?.nowLocation}`);
-
-  const gettingRooms = async () => {
-    if (!loadingMore) {
+  const gettingRooms = async (loadingMoreRooms: boolean) => {
+    if (!loadingMoreRooms) {
       return;
+    } else {
+      setLoadingFull(true);
+      goToNextPage();
     }
 
-    page += 1;
-    let nowLocation = user?.nowLocation ?? null;
+    let userLocation = user?.nowLocation ?? null;
 
     let res = await getRooms({
       page: page,
-      location: nowLocation,
+      location: userLocation,
     });
     if (res.success) {
+      console.log(`Total rooms: ${res.data?.length}`);
       if (res.data?.length ?? 0 > 0) {
         addRooms(res.data || []);
       }
       if (res.data?.length ?? 0 < numberRoomReturn) {
-        setLoadingMore(false);
+        toggleLoadingMoreRooms();
       }
     } else {
       Alert.alert("Trang chủ", res.message);
     }
+
+    setLoadingFull(false);
   };
 
   useEffect(() => {
-    // gettingRooms();
+    console.log(`Your location: ${user?.nowLocation}`);
 
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setIsKeyboardShow(true);
@@ -70,6 +80,23 @@ const home = () => {
     };
   }, []);
 
+  if (loadingFull) {
+    return (
+      <ScreenWarpper
+        statusBarColor={theme.colors.lightGray2}
+        nightMode={false}
+        color={theme.colors.lightGray2}
+        autoDismissKeyboard={isKeyboardShow}
+      >
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Loading size="large" />
+        </View>
+      </ScreenWarpper>
+    );
+  }
+
   return (
     <ScreenWarpper
       statusBarColor="black"
@@ -80,7 +107,7 @@ const home = () => {
       <FlatList
         onEndReachedThreshold={0}
         onEndReached={() => {
-          gettingRooms();
+          gettingRooms(loadingMoreRooms);
         }}
         data={rooms}
         showsVerticalScrollIndicator={false}
@@ -105,7 +132,7 @@ const home = () => {
           </View>
         }
         keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) => <RoomCard room={item} />}
+        renderItem={({ item }) => <RoomCard room={item} router={router} />}
       />
     </ScreenWarpper>
   );

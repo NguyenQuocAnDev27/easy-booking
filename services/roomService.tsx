@@ -8,8 +8,6 @@ export interface Amenity {
 
 export interface HotelAmenity {
   id: string;
-  hotel_id: string;
-  amenity_id: string;
   amenity: Amenity;
 }
 
@@ -18,8 +16,8 @@ export interface Hotel {
   name: string;
   rating: number;
   location: string;
-  hotel_amenity: HotelAmenity[];
-  reviews: Review[]
+  hotel_amenities: HotelAmenity[];
+  reviews: Review[];
 }
 
 export interface Review {
@@ -37,9 +35,10 @@ export interface Room {
   is_available: boolean;
   capacity: number;
   created_at: string;
-  hotel: Hotel;
+  hotel?: Hotel;
+  beds?: number;
+  baths?: number;
 }
-
 
 const SERVICE_NAME = "Room Service";
 
@@ -55,44 +54,173 @@ export const getRooms = async ({
   location = null,
 }: apiGetRoomBody): Promise<APIResponse<Room[]>> => {
   const taskName = "getting rooms";
-  console.log(`Have location ? | ${location}`);
   try {
     let query = supabase
       .from("rooms")
       .select(
-        `*, 
-        hotel:hotels(id, name, location, rating, 
-          reviews: reviews(id, hotel_id, rating),
-          hotel_amenity:hotel_amenities(id, hotel_id, amenity_id, 
-            amenity:amenities(id, name)))`
+        `
+        *,
+        hotel:hotels (
+          id,
+          name,
+          location,
+          rating,
+          hotel_amenities:hotel_amenities (
+            id,
+            amenity:amenities (
+              id,
+              name
+            )
+          ),
+          reviews:reviews (
+            id,
+            rating
+          )
+        )
+      `
       )
-      .order("created_at", { ascending: false })
-      .range((page - 1) * numberRoomReturn, page * numberRoomReturn - 1);
+      .order("created_at", { ascending: false });
 
     if (location) {
-      query = query.ilike("hotel.location", `%${location}%`);
+      console.log("Sorting by exact location first...");
+      query = query.order("created_at", { ascending: false });
     }
+
+    query = query.range(
+      (page - 1) * numberRoomReturn,
+      page * numberRoomReturn - 1
+    );
 
     const { data, error } = await query;
 
-    // ❌ Handle error
     if (error) {
-      console.warn(
-        `${SERVICE_NAME} || Error while ${taskName} | Error: ${error.message}`
-      );
+      console.warn(`${SERVICE_NAME} || Error fetching rooms`, error);
       return {
         success: false,
-        message: `Error while ${taskName}`,
+        message: "Error fetching rooms",
         data: null,
       };
     }
 
-    // ✅ Success - Return retrieved rooms
-    console.log(`${SERVICE_NAME} || ${taskName} of page ${page}`)
+    console.log(`${SERVICE_NAME} || Fetched ${data.length} rooms`);
+
+    const processedRooms = data.map((room) => ({
+      ...room,
+      hotel: {
+        ...room.hotel,
+        hotel_amenities: room.hotel?.hotel_amenities ?? [],
+        reviews: room.hotel?.reviews ?? [],
+      },
+    }));
+
+    let matchRooms = processedRooms.filter(
+      (room) => room.hotel?.location === location
+    );
+    let restRooms = processedRooms.filter(
+      (room) => room.hotel?.location !== location
+    );
+
+    if (matchRooms.length === 0) {
+      console.log("No exact matches found, showing all rooms.");
+      matchRooms = restRooms;
+      restRooms = [];
+    }
+
     return {
       success: true,
       message: `${taskName} successfully`,
-      data: data as Room[],
+      data: [...matchRooms, ...restRooms] as Room[],
+    };
+  } catch (error) {
+    console.warn(
+      `${SERVICE_NAME} || Error while ${taskName} | Error: ${error}`
+    );
+    return {
+      success: false,
+      message: `Error while ${taskName}`,
+      data: null,
+    };
+  }
+};
+
+export interface HotelDetail {
+  id: string;
+  name: string;
+  rating: number;
+  location: string;
+  description: string;
+  address: string;
+  contact_phone: string;
+  hotel_amenities: HotelAmenity[];
+  reviews: Review[];
+}
+
+export interface RoomDetail {
+  id: string;
+  hotel_id: string;
+  room_number: number;
+  room_type: string;
+  price_per_night: number;
+  is_available: boolean;
+  capacity: number;
+  created_at: string;
+  hotel?: HotelDetail;
+  beds?: number;
+  baths?: number;
+}
+
+export const getRoomById = async (
+  roomId: string
+): Promise<APIResponse<RoomDetail>> => {
+  const taskName = "getting room's detail";
+  try {
+    let query = supabase
+      .from("rooms")
+      .select(
+        `
+        *,
+        hotel:hotels (
+          id,
+          name,
+          location,
+          rating,
+          description,
+          address,
+          contact_phone,
+          hotel_amenities:hotel_amenities (
+            id,
+            amenity:amenities (
+              id,
+              name
+            )
+          ),
+          reviews:reviews (
+            id,
+            rating
+          )
+        )
+      `
+      )
+      .eq("id", roomId)
+      .single();
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.warn(`${SERVICE_NAME} || Error fetching rooms`, error);
+      return {
+        success: false,
+        message: "Error fetching rooms",
+        data: null,
+      };
+    }
+
+    console.log(`${SERVICE_NAME} || Fetched room ${roomId}`);
+
+    return {
+      success: true,
+      message: `${taskName} successfully`,
+      data: data as RoomDetail,
     };
   } catch (error) {
     console.warn(

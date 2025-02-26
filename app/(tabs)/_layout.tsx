@@ -24,14 +24,11 @@ export default function _layout() {
 
   return (
     <>
-      <Stack
-        screenOptions={{ headerShown: false, animation: getTransition() }}
-      >
+      <Stack screenOptions={{ headerShown: false, animation: getTransition() }}>
         <Stack.Screen name="checkRoom" />
         <Stack.Screen name="favorite" />
         <Stack.Screen name="home" />
         <Stack.Screen name="profile" />
-        <Stack.Screen name="editProfile" />
       </Stack>
       <BottomNavigator />
     </>

@@ -14,6 +14,15 @@ import Calendar from "./Calendar";
 import Location from "./Location";
 import Star from "./Star";
 import MultiUser from "./MultiUser";
+import Diamond from "./Diamond";
+import Bed from "./Bed";
+import Bath from "./Bath";
+import Sparkles from "./Sparkles";
+import Share from "./Share";
+import Hotel from "./Hotel";
+import DollarCircle from "./DollarCircle";
+import MinusCircle from "./MinusCircle";
+import PlusCircle from "./PlusCircle";
 
 // Define an object that maps icon names to components
 const icons = {
@@ -32,6 +41,15 @@ const icons = {
   location: Location,
   star: Star,
   multiUser: MultiUser,
+  diamond: Diamond,
+  bed: Bed,
+  bath: Bath,
+  sparkles: Sparkles,
+  share: Share,
+  hotel: Hotel,
+  dollarCircle: DollarCircle,
+  minusCircle: MinusCircle,
+  plusCircle: PlusCircle,
 } as const;
 
 // Define the type for valid icon names

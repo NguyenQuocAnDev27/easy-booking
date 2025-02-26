@@ -12,9 +12,7 @@ interface ScreenWrapperProps {
   color?: string;
   autoDismissKeyboard?: boolean;
   statusBarColor?: string;
-  textBarColor?: string;
   nightMode?: boolean;
-  showBottomNav?: boolean;
 }
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -24,9 +22,7 @@ const ScreenWarpper: React.FC<ScreenWrapperProps> = ({
   color = "white",
   autoDismissKeyboard = true,
   statusBarColor = "white",
-  textBarColor = "black",
   nightMode = false,
-  showBottomNav = true,
 }) => {
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 5 : 30;
@@ -43,7 +39,7 @@ const ScreenWarpper: React.FC<ScreenWrapperProps> = ({
   if (Platform.OS === "android") {
     return (
       <View
-        style={{ flex: 1, paddingTop: StatusBarHeight, backgroundColor: color }}
+        style={{ flex: 1, backgroundColor: color }}
       >
         <StatusBar
           barStyle={nightMode ? "light-content" : "dark-content"}

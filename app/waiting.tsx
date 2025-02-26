@@ -8,8 +8,14 @@ import { getAddressFromCoordinates } from "@/services/locationService";
 
 const waiting = () => {
   const router = useRouter();
-  const { user, loginUser, logoutUser, updateUser, updateNowLocation } =
-    useAuth();
+  const {
+    user,
+    loginUser,
+    logoutUser,
+    updateUser,
+    updateNowLocation,
+    clearPage, clearRooms
+  } = useAuth();
 
   const updatingLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -49,10 +55,19 @@ const waiting = () => {
 
   useEffect(() => {
     updatingLocation();
+    clearPage();
+    clearRooms();
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", alignItems: 'center', justifyContent: 'center' }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Loading size="large" />
     </View>
   );

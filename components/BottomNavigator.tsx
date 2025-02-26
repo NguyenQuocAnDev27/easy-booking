@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 import Animated, {
   useAnimatedStyle,
@@ -9,6 +15,7 @@ import Icon from "@/assets/icons";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/helpers/common";
 import { useNavigator } from "@/contexts/NavigatorContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const BottomNavigator = () => {
   const router = useRouter();
@@ -25,6 +32,7 @@ const BottomNavigator = () => {
         duration: 100,
       });
       router.replace(tabs[newPosition].moveTo);
+      Keyboard.dismiss();
     }
   };
 
@@ -75,6 +83,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: theme.colors.white,
     paddingTop: hp(2),
+    borderTopWidth: 2,
+    borderColor: theme.colors.lightGray3,
   },
   animatedImage: {
     position: "absolute",

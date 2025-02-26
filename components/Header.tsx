@@ -18,13 +18,37 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const router = useRouter();
   return (
-    <View style={[styles.container, { marginBottom: marginBottom }]}>
+    <View
+      style={[
+        {
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 5,
+          gap: 10,
+        },
+        { marginBottom: 10 },
+      ]}
+    >
       {showBackButton && (
-        <View style={styles.backButton}>
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+          }}
+        >
           <BackButton onPress={() => router.back()} />
         </View>
       )}
-      <Text style={styles.title}>{title}</Text>
+      <Text
+        style={{
+          fontSize: hp(2.7),
+          fontWeight: theme.fonts.semibold,
+          color: theme.colors.textDark,
+        }}
+      >
+        {title}
+      </Text>
     </View>
   );
 };
@@ -33,14 +57,14 @@ export default Header;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 5,
     gap: 10,
   },
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
   },
   title: {

@@ -56,7 +56,9 @@
     "react-native-webview": "13.12.5",
     "react-redux": "^9.2.0",
     "undefined": "@expo/vector-icons/FontAwesome",
-    "jest-expo": "~52.0.5"
+    "jest-expo": "~52.0.5",
+    "expo-linear-gradient": "~14.0.2",
+    "@react-native-community/datetimepicker": "8.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

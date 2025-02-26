@@ -28,8 +28,14 @@ const _layout = () => {
 
 const MainLayout = () => {
   const router = useRouter();
-  const { user, loginUser, logoutUser, updateUser, updateNowLocation } =
-    useAuth();
+  const {
+    user,
+    loginUser,
+    logoutUser,
+    updateUser,
+    updateNowLocation,
+    clearPage,
+  } = useAuth();
 
   AppState.addEventListener("change", (state) => {
     if (state === "active") {
@@ -48,12 +54,9 @@ const MainLayout = () => {
       router.push("/login");
     }
   };
-  
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
-      console.log(`Session -> userId: ${session?.user?.id}`);
-
       if (session) {
         loginUser(session?.user);
         updatingUserInfo(session?.user.id);
@@ -73,8 +76,9 @@ const MainLayout = () => {
       <Stack.Screen name="welcome" />
       <Stack.Screen name="booking" />
       <Stack.Screen name="payment" />
-      <Stack.Screen name="roomDetail" />
       <Stack.Screen name="waiting" />
+      <Stack.Screen name="editProfile" />
+      <Stack.Screen name="roomDetail" />
     </Stack>
   );
 };
