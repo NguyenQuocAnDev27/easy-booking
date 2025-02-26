@@ -1,6 +1,6 @@
 # Welcome to Easy Booking! 📱✨
 
-- Easy Booking is ... ?
+- Easy Booking is a mobile app that simplifies the hotel booking process, helping users easily find and book hotels based on their preferred locations and dates. With an intuitive interface, users can view hotel details, check availability, and complete their bookings—all from their mobile devices.
 
 ## 🚀 Get started
 Follow the steps below to get started with the project:
@@ -21,17 +21,18 @@ Follow the steps below to get started with the project:
 - Link: 
 
 ## 📱 Features
-
-- Auto show list hotel is available around user.
-- Custom Component (using only Pure component)
-- Custom Animation Bottom Navigator
-- Feature 4
-- Feature 5
+- Auto Show Hotel List: Displays a list of available hotels based on the user’s location or preferences.
+- Custom Components: The app uses only pure components for improved performance and reusability.
+- Custom Bottom Navigation Animation: Provides a smooth animation for the bottom navigation to enhance user experience.
+- Hotel Details: Users can view detailed information about each hotel, including amenities, pricing, and ratings.
+- Booking Flow: Allows users to select dates, enter personal details, and complete bookings seamlessly.
+- User Authentication: Users can sign up, log in, and manage their profile within the app.
 
 ## 🛠️ Technologies Used
-- React Native
-- Expo
-- Redux
-- Supabase
-- Reanimated
+- React Native: The framework for building cross-platform mobile apps.
+- Expo: A toolset for building and deploying React Native apps quickly.
+- Redux: State management for handling app data efficiently.
+- Supabase: Backend service used for managing user data, hotel details, and bookings.
+- Reanimated: Used for smooth animations and transitions within the app.
+- React Navigation: Navigation library to handle routing and transitions in the app.
 
