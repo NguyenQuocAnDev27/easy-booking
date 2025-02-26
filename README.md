@@ -22,9 +22,9 @@ Follow the steps below to get started with the project:
 
 ## 📱 Features
 
-- Feature 1
-- Feature 2
-- Feature 3
+- Auto show list hotel is availabel around user.
+- Custom Component (using only Pure component)
+- Custom Animation Bottom Navigator
 - Feature 4
 - Feature 5
 
