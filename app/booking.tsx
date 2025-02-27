@@ -90,9 +90,9 @@ const booking = () => {
   }
 
   return (
-    <ScreenWarpper>
+    <ScreenWarpper autoDismissKeyboard={false}>
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ flex: 1, gap: hp(2) }}>
             <Header title="Đặt phòng" />
 
@@ -567,6 +567,8 @@ const booking = () => {
                 )}
               </View>
             </View>
+
+            <View style={{ height: hp(15) }}></View>
           </View>
         </ScrollView>
 

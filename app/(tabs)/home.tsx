@@ -13,7 +13,13 @@ import { hp, wp } from "@/helpers/common";
 import SearchBar from "@/components/SearchBar";
 import UserOptionsBar from "@/components/UserOptionsBar";
 import { useAuth } from "@/contexts/AuthContext";
-import { getRooms, numberRoomReturn, Room } from "@/services/roomService";
+import {
+  createFavoriteRoom,
+  getRooms,
+  numberRoomReturn,
+  removeFavoriteRoom,
+  Room,
+} from "@/services/roomService";
 import RoomCard from "@/components/RoomCard";
 import Loading from "@/components/Loading";
 import { useRouter } from "expo-router";
@@ -22,6 +28,7 @@ const home = () => {
   const {
     user,
     rooms,
+    updateRooms,
     addRooms,
     page,
     goToNextPage,
@@ -43,8 +50,10 @@ const home = () => {
     }
 
     let userLocation = user?.nowLocation ?? null;
+    let user_id = user?.detail?.id ?? "";
 
     let res = await getRooms({
+      user_id: user_id,
       page: page,
       location: userLocation,
     });
@@ -97,6 +106,20 @@ const home = () => {
     );
   }
 
+  const onLikeRoom = async (roomId: string, isFavorite: boolean) => {
+    const updatedRooms = rooms.map((room) =>
+      room.id === roomId ? { ...room, isFavorite: !isFavorite } : room
+    );
+
+    updateRooms(updatedRooms);
+
+    if (isFavorite) {
+      await removeFavoriteRoom(user?.detail?.id ?? "", roomId);
+    } else {
+      await createFavoriteRoom(user?.detail?.id ?? "", roomId);
+    }
+  };
+
   return (
     <ScreenWarpper
       statusBarColor="black"
@@ -132,7 +155,15 @@ const home = () => {
           </View>
         }
         keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) => <RoomCard room={item} router={router} />}
+        renderItem={({ item }) => (
+          <RoomCard
+            room={item}
+            router={router}
+            onLikeAsync={async (roomId, isFavorite) =>
+              onLikeRoom(roomId, isFavorite)
+            }
+          />
+        )}
       />
     </ScreenWarpper>
   );

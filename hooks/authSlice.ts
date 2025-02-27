@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@supabase/supabase-js";
 import { SupaUser } from "@/services/userService";
-import { Room } from "@/services/roomService";
+import { FavoriteRoom, Room } from "@/services/roomService";
 
 export interface AppUser {
   session: User;
@@ -11,16 +11,22 @@ export interface AppUser {
 
 interface AuthState {
   user: AppUser | null;
-  rooms: Room[];
   page: number;
+  rooms: Room[];
   loadingMoreRooms: boolean;
+  favoriteRooms: FavoriteRoom[];
+  pageFavorite: number;
+  loadingMoreFavoriteRooms: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  rooms: [],
   page: 0,
-  loadingMoreRooms: true
+  rooms: [],
+  loadingMoreRooms: true,
+  pageFavorite: 0,
+  favoriteRooms: [],
+  loadingMoreFavoriteRooms: true,
 };
 
 const authSlice = createSlice({
@@ -44,7 +50,7 @@ const authSlice = createSlice({
       state.rooms = action.payload.rooms;
     },
     appendRoomsSlice: (state, action: PayloadAction<{ rooms: Room[] }>) => {
-      state.rooms = [...state.rooms, ...action.payload.rooms];
+      state.rooms = [...action.payload.rooms, ...state.rooms];
     },
     clearRoomsSlice: (state) => {
       state.rooms = [];
@@ -60,8 +66,35 @@ const authSlice = createSlice({
       state.page = 0;
     },
     doToggleLoadingMoreRooms: (state) => {
-      state.loadingMoreRooms = !state.loadingMoreRooms
-    }
+      state.loadingMoreRooms = !state.loadingMoreRooms;
+    },
+    doSetFavoriteRooms: (
+      state,
+      action: PayloadAction<{ favoriteRooms: FavoriteRoom[] }>
+    ) => {
+      state.favoriteRooms = action.payload.favoriteRooms;
+    },
+    doAppendFavoriteRoom: (
+      state,
+      action: PayloadAction<{ favoriteRooms: FavoriteRoom[] }>
+    ) => {
+      state.favoriteRooms = [
+        ...action.payload.favoriteRooms,
+        ...state.favoriteRooms,
+      ];
+    },
+    doClearFavoriteRooms: (state) => {
+      state.favoriteRooms = [];
+    },
+    doGoToNextFavoritePage: (state) => {
+      state.pageFavorite = state.pageFavorite + 1;
+    },
+    doClearFavortiePage: (state) => {
+      state.pageFavorite = 0;
+    },
+    doToggleLoadingMoreFavoriteRooms: (state) => {
+      state.loadingMoreFavoriteRooms = !state.loadingMoreFavoriteRooms;
+    },
   },
 });
 
@@ -75,6 +108,12 @@ export const {
   logout,
   doGoToNextPage,
   doClearPage,
-  doToggleLoadingMoreRooms
+  doToggleLoadingMoreRooms,
+  doSetFavoriteRooms,
+  doAppendFavoriteRoom,
+  doClearFavoriteRooms,
+  doGoToNextFavoritePage,
+  doClearFavortiePage,
+  doToggleLoadingMoreFavoriteRooms,
 } = authSlice.actions;
 export default authSlice.reducer;

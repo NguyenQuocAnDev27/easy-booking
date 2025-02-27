@@ -24,6 +24,11 @@ import DollarCircle from "./DollarCircle";
 import MinusCircle from "./MinusCircle";
 import PlusCircle from "./PlusCircle";
 import Logout from "./Logout";
+import SquareArrowUp from "./SquareArrowUp";
+import SquareArrowDown from "./SquareArrowDown";
+import Room from "./Room";
+import Key from "./Key";
+import CircleCheck from "./CircleCheck";
 
 // Define an object that maps icon names to components
 const icons = {
@@ -52,6 +57,11 @@ const icons = {
   minusCircle: MinusCircle,
   plusCircle: PlusCircle,
   logout: Logout,
+  squareArrowUp: SquareArrowUp,
+  squareArrowDown: SquareArrowDown,
+  room: Room,
+  key: Key,
+  circleCheck: CircleCheck,
 } as const;
 
 // Define the type for valid icon names

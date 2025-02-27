@@ -16,14 +16,16 @@ import { Router } from "expo-router";
 
 interface RoomCardProps {
   room: Room;
-  isFavarite?: boolean;
   router?: Router;
+  color?: string;
+  onLikeAsync?: (roomId: string, isFavorite: boolean) => void;
 }
 
 const RoomCard: React.FC<RoomCardProps> = ({
   room,
-  isFavarite = false,
   router,
+  color = theme.colors.lightGray2,
+  onLikeAsync = () => {},
 }) => {
   const [colorTouch, setColorTouch] = useState("transparent");
 
@@ -35,10 +37,15 @@ const RoomCard: React.FC<RoomCardProps> = ({
       },
     });
   };
+
+  const handleLikeToggle = () => {
+    onLikeAsync(room.id, room.isFavorite ?? false);
+  };
+
   return (
     <View
       style={{
-        backgroundColor: theme.colors.lightGray2,
+        backgroundColor: color,
         paddingHorizontal: wp(4),
         paddingBottom: hp(2),
       }}
@@ -146,6 +153,33 @@ const RoomCard: React.FC<RoomCardProps> = ({
               style={styles.amenityContainer}
             />
           )}
+
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              paddingRight: 20,
+              paddingTop: 20,
+            }}
+          >
+            <TouchableOpacity onPress={handleLikeToggle}>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  padding: 7,
+                  borderRadius: theme.radius.xxl * 99,
+                }}
+              >
+                <Icon
+                  name="heart"
+                  color={theme.colors.primary}
+                  size={18}
+                  fill={room.isFavorite ? theme.colors.primary : "none"}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </TouchableOpacity>
     </View>

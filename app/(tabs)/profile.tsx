@@ -16,8 +16,6 @@ import { theme } from "@/constants/theme";
 import Icon from "@/assets/icons";
 import { SupaUser } from "@/services/userService";
 import { hp, maskGmail, maskPhoneNumber, wp } from "@/helpers/common";
-import { supabase } from "@/services/supabaseService";
-import Loading from "@/components/Loading";
 
 // Profile
 const Profile = () => {

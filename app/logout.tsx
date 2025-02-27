@@ -5,11 +5,9 @@ import { theme } from "@/constants/theme";
 import Loading from "@/components/Loading";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/services/supabaseService";
-import { useRouter } from "expo-router";
 
 const logout = () => {
-  const { user: currentUser, logoutUser, clearPage, clearRooms } = useAuth();
-  const router = useRouter();
+  const { logoutUser, clearPage, clearRooms } = useAuth();
 
   const onLogout = async () => {
     const { error } = await supabase.auth.signOut();

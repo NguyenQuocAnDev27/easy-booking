@@ -13,14 +13,22 @@ import {
   doGoToNextPage,
   doClearPage,
   doToggleLoadingMoreRooms,
+  doSetFavoriteRooms,
+  doAppendFavoriteRoom,
+  doClearFavoriteRooms,
+  doGoToNextFavoritePage,
+  doToggleLoadingMoreFavoriteRooms,
 } from "@/hooks/authSlice";
-import { Room } from "@/services/roomService";
+import { FavoriteRoom, Room } from "@/services/roomService";
 
 interface AuthContextProps {
   user: AppUser | null;
   rooms: Room[];
   page: number;
   loadingMoreRooms: boolean;
+  favoriteRooms: FavoriteRoom[];
+  pageFavorite: number;
+  loadingMoreFavoriteRooms: boolean;
   loginUser: (session: AppUser["session"]) => void;
   updateUser: (user: AppUser["detail"]) => void;
   updateNowLocation: (location: string) => void;
@@ -31,13 +39,27 @@ interface AuthContextProps {
   goToNextPage: () => void;
   clearPage: () => void;
   toggleLoadingMoreRooms: () => void;
+  setFavoriteRooms: (rooms: FavoriteRoom[]) => void;
+  addFavoriteRooms: (rooms: FavoriteRoom[]) => void;
+  clearFavoriteRooms: () => void;
+  goToNextFavoritePage: () => void;
+  clearFavoritePage: () => void;
+  toggleLoadingMoreFavoriteRooms: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
-  const { user, rooms, page, loadingMoreRooms } = useSelector((state: RootState) => state.auth);
+  const {
+    user,
+    rooms,
+    page,
+    loadingMoreRooms,
+    favoriteRooms,
+    pageFavorite,
+    loadingMoreFavoriteRooms,
+  } = useSelector((state: RootState) => state.auth);
 
   // Login the user by storing both session and user details
   const loginUser = (session: AppUser["session"]) => {
@@ -89,6 +111,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const toggleLoadingMoreRooms = () => {
     dispatch(doToggleLoadingMoreRooms());
   };
+
+  //  Function to replace rooms
+  const setFavoriteRooms = (favoriteRooms: FavoriteRoom[]) => {
+    dispatch(doSetFavoriteRooms({ favoriteRooms }));
+  };
+
+  //  Function to append more rooms
+  const addFavoriteRooms = (favoriteRooms: FavoriteRoom[]) => {
+    dispatch(doAppendFavoriteRoom({ favoriteRooms }));
+  };
+
+  //  Function to clear all rooms
+  const clearFavoriteRooms = () => {
+    dispatch(doClearFavoriteRooms());
+  };
+
+  const goToNextFavoritePage = () => {
+    dispatch(doGoToNextFavoritePage());
+  };
+
+  const clearFavoritePage = () => {
+    dispatch(doClearFavoriteRooms());
+  };
+
+  const toggleLoadingMoreFavoriteRooms = () => {
+    dispatch(doToggleLoadingMoreFavoriteRooms());
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -96,6 +145,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         rooms,
         page,
         loadingMoreRooms,
+        favoriteRooms,
+        pageFavorite,
+        loadingMoreFavoriteRooms,
         loginUser,
         updateUser,
         updateNowLocation,
@@ -106,6 +158,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         goToNextPage,
         clearPage,
         toggleLoadingMoreRooms,
+        setFavoriteRooms,
+        addFavoriteRooms,
+        clearFavoriteRooms,
+        goToNextFavoritePage,
+        clearFavoritePage,
+        toggleLoadingMoreFavoriteRooms
       }}
     >
       {children}

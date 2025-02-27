@@ -1,7 +1,5 @@
-import BottomNavigator from "@/components/BottomNavigator";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { NavigatorProvider } from "@/contexts/NavigatorContext";
-import { AppUser } from "@/hooks/authSlice";
 import { store } from "@/hooks/store";
 import { supabase } from "@/services/supabaseService";
 import { getUserData } from "@/services/userService";
@@ -9,10 +7,6 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Alert, AppState } from "react-native";
 import { Provider } from "react-redux";
-import {
-  getAddressFromCoordinates,
-  NominatimAPIResponse,
-} from "@/services/locationService";
 
 const _layout = () => {
   return (
@@ -28,14 +22,7 @@ const _layout = () => {
 
 const MainLayout = () => {
   const router = useRouter();
-  const {
-    user,
-    loginUser,
-    logoutUser,
-    updateUser,
-    updateNowLocation,
-    clearPage,
-  } = useAuth();
+  const { loginUser, logoutUser, updateUser } = useAuth();
 
   AppState.addEventListener("change", (state) => {
     if (state === "active") {
