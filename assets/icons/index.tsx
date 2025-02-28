@@ -29,6 +29,7 @@ import SquareArrowDown from "./SquareArrowDown";
 import Room from "./Room";
 import Key from "./Key";
 import CircleCheck from "./CircleCheck";
+import Ticket from "./Ticket";
 
 // Define an object that maps icon names to components
 const icons = {
@@ -62,6 +63,7 @@ const icons = {
   room: Room,
   key: Key,
   circleCheck: CircleCheck,
+  ticket: Ticket,
 } as const;
 
 // Define the type for valid icon names

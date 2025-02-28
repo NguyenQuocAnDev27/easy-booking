@@ -21,6 +21,7 @@ import { theme } from "@/constants/theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { BodyCreateBooking, createBooking } from "@/services/bookingService";
+import { STATUS_BOOKING_TICKET } from "@/constants";
 
 const booking = () => {
   const params = useLocalSearchParams();
@@ -85,7 +86,7 @@ const booking = () => {
       check_in_date: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
       check_out_date: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
       total_price: totalPrice(),
-      status: "IN_PROCESS",
+      status: STATUS_BOOKING_TICKET.IN_PROCESS,
     };
 
     let res = await createBooking(prepare_data);
