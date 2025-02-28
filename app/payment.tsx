@@ -1,14 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import ScreenWarpper from "@/components/ScreenWrapper";
+import { useLocalSearchParams } from "expo-router";
 
 const payment = () => {
+  const params = useLocalSearchParams();
+  const bookingId = params.bookingId;
+
   return (
-    <View>
-      <Text>payment</Text>
-    </View>
-  )
-}
+    <ScreenWarpper>
+      <View>
+        <Text>payment</Text>
+      </View>
+    </ScreenWarpper>
+  );
+};
 
-export default payment
+export default payment;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

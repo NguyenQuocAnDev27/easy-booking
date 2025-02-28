@@ -20,6 +20,7 @@ import Icon from "@/assets/icons";
 import { theme } from "@/constants/theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
+import { BodyCreateBooking, createBooking } from "@/services/bookingService";
 
 const booking = () => {
   const params = useLocalSearchParams();
@@ -32,18 +33,12 @@ const booking = () => {
   const [isSelectNight, setIsSelectNight] = useState<boolean>(true);
   const [timeStay, setTimeStay] = useState<number>(1);
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState<"date" | "time">("date");
   const [show, setShow] = useState(false);
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios" ? true : false);
     setDate(currentDate);
-  };
-
-  const showMode = (currentMode: any) => {
-    setShow(true);
-    setMode(currentMode);
   };
 
   const gettingRoomDetail = async (roomId: string) => {
@@ -76,6 +71,33 @@ const booking = () => {
 
     gettingRoomDetail(roomId as string);
   }, []);
+
+  const handleFAB = async () => {
+    //
+    const totalPrice = () => {
+      if (isSelectNight) return (roomDetail?.price_per_night || 0) * capacity;
+      return (roomDetail?.price_per_night || 0) * 2 * capacity * timeStay;
+    };
+
+    const prepare_data: BodyCreateBooking = {
+      user_id: user?.detail?.id ?? "",
+      room_id: roomDetail?.id ?? "",
+      check_in_date: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
+      check_out_date: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
+      total_price: totalPrice(),
+      status: "IN_PROCESS",
+    };
+
+    let res = await createBooking(prepare_data);
+    if (res.success) {
+      router.push({
+        pathname: "/payment",
+        params: { bookingId: res.data.id },
+      });
+    } else {
+      Alert.alert("Đặt phòng", res.message);
+    }
+  };
 
   if (loadingFull) {
     return (
@@ -540,7 +562,7 @@ const booking = () => {
                   Ngày nhận phòng: {date.toLocaleDateString()}
                 </Text>
 
-                <TouchableOpacity onPress={() => showMode("date")}>
+                <TouchableOpacity onPress={() => setShow(true)}>
                   <View
                     style={{
                       padding: 5,
@@ -641,12 +663,7 @@ const booking = () => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => {
-                // router.push({
-                //   pathname: "/payment",
-                //   params: { roomId: roomDetail?.id },
-                // })
-              }}
+              onPress={handleFAB}
             >
               <View>
                 <Text

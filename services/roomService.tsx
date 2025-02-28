@@ -93,13 +93,14 @@ export const getRooms = async ({
       (page - 1) * numberRoomReturn,
       page * numberRoomReturn - 1
     );
-
+    // 🔄️ Getting
     const { data, error } = await query;
     const { data: data1, error: error2 } = await supabase
       .from("favorite_rooms")
       .select("*")
       .eq("user_id", user_id);
 
+    // ❌ Error
     if (error || error2) {
       console.warn(`${SERVICE_NAME} || Error fetching rooms`, error);
       console.warn(`${SERVICE_NAME} || Error fetching favorite rooms`, error2);
@@ -137,6 +138,7 @@ export const getRooms = async ({
       restRooms = [];
     }
 
+    // ✅ Success
     return {
       success: true,
       message: `${taskName} successfully`,
@@ -216,8 +218,10 @@ export const getRoomById = async (
       .eq("is_available", true)
       .single();
 
+    // 🔄️ Getting
     const { data, error } = await query;
 
+    // ❌ Error
     if (error) {
       console.warn(`${SERVICE_NAME} || Error fetching rooms`, error);
       return {
@@ -229,6 +233,7 @@ export const getRoomById = async (
 
     console.log(`${SERVICE_NAME} || Fetched room ${roomId}`);
 
+    // ✅ Success
     return {
       success: true,
       message: `${taskName} successfully`,
@@ -257,6 +262,7 @@ export const getFavoriteRooms = async (
 ): Promise<APIResponse> => {
   const taskName = "getting favorite rooms";
   try {
+    // 🔄️ Getting
     const { data, error } = await supabase
       .from("favorite_rooms")
       .select(
@@ -288,6 +294,7 @@ export const getFavoriteRooms = async (
       .order("created_at", { ascending: false })
       .range((page - 1) * numberRoomReturn, page * numberRoomReturn - 1);
 
+    // ❌ Error
     if (error) {
       console.warn(`${SERVICE_NAME} || Error while ${taskName}`, error);
       return {
@@ -297,6 +304,7 @@ export const getFavoriteRooms = async (
       };
     }
 
+    // ✅ Success
     return {
       success: true,
       message: `${taskName} successfully`,
@@ -320,14 +328,17 @@ export const createFavoriteRoom = async (
 ): Promise<APIResponse> => {
   const taskName = "creating favorite room";
   try {
+    // 🔄️ Getting
     let { data, error } = await supabase
       .from("favorite_rooms")
       .upsert({
         user_id,
         room_id,
       })
+      .select()
       .single();
 
+    // ❌ Error
     if (error) {
       console.warn(`${SERVICE_NAME} || Error while ${taskName}`, error);
       return {
@@ -337,8 +348,8 @@ export const createFavoriteRoom = async (
       };
     }
 
-    
-    console.log(`${SERVICE_NAME} || ${taskName} successfully`)
+    // ✅ Success
+    console.log(`${SERVICE_NAME} || ${taskName} successfully`);
     return {
       success: true,
       message: `${taskName} successfully`,
@@ -359,11 +370,14 @@ export const removeFavoriteRoom = async (
 ): Promise<APIResponse> => {
   const taskName = "removing favorite room";
   try {
+    // 🔄️ Getting
     const { error } = await supabase
       .from("favorite_rooms")
       .delete()
       .eq("user_id", user_id)
       .eq("room_id", room_id);
+
+    // ❌ Error
     if (error) {
       console.warn(`${SERVICE_NAME} || Error while ${taskName}`, error);
       return {
@@ -373,8 +387,8 @@ export const removeFavoriteRoom = async (
       };
     }
 
-
-    console.log(`${SERVICE_NAME} || ${taskName} successfully`)
+    // ✅ Success
+    console.log(`${SERVICE_NAME} || ${taskName} successfully`);
     return {
       success: true,
       message: `${taskName} successfully`,
