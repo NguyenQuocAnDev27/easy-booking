@@ -94,3 +94,18 @@ export const capitalizeText = (text: string): string => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+
+export const formatDateSupabase = (date: any, hours: any, minutes: any): string => {
+  const validDate = new Date(date);
+  validDate.setHours(hours, minutes, 0, 0);
+
+  const year = validDate.getFullYear();
+  const month = (validDate.getMonth() + 1).toString().padStart(2, "0");
+  const day = validDate.getDate().toString().padStart(2, "0");
+  const hour = validDate.getHours().toString().padStart(2, "0");
+  const minute = validDate.getMinutes().toString().padStart(2, "0");
+  const second = validDate.getSeconds().toString().padStart(2, "0");
+
+  // Format as "YYYY-MM-DD HH:mm:ss"
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+};

@@ -40,6 +40,7 @@ const home = () => {
   const inputRef = useRef(null);
   const [loadingFull, setLoadingFull] = useState(false);
   const router = useRouter();
+  const [isEmptyRooms, setIsEmptyRooms] = useState(false);
 
   const gettingRooms = async (loadingMoreRooms: boolean) => {
     if (!loadingMoreRooms) {
@@ -67,6 +68,7 @@ const home = () => {
       }
     } else {
       Alert.alert("Trang chủ", res.message);
+      setIsEmptyRooms(true);
     }
 
     setLoadingFull(false);
@@ -152,6 +154,26 @@ const home = () => {
                 Các Khách Sạn Xung Quanh Bạn
               </Text>
             </View>
+
+            {isEmptyRooms && (
+              <View
+                style={{
+                  width: "100%",
+                  height: hp(40),
+                  backgroundColor: theme.colors.lightGray2,
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    padding: 20,
+                    fontSize: hp(1.6),
+                  }}
+                >
+                  Hiện không còn khách sạn nào còn phòng
+                </Text>
+              </View>
+            )}
           </View>
         }
         keyboardShouldPersistTaps="handled"

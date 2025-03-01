@@ -12,7 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ScreenWarpper from "@/components/ScreenWrapper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "@/components/Header";
-import { formatVND, hp, wp } from "@/helpers/common";
+import { formatDateSupabase, formatVND, hp, wp } from "@/helpers/common";
 import Loading from "@/components/Loading";
 import { getRoomById, RoomDetail } from "@/services/roomService";
 import { useAuth } from "@/contexts/AuthContext";
@@ -80,21 +80,71 @@ const booking = () => {
       return (roomDetail?.price_per_night || 0) * 2 * capacity * timeStay;
     };
 
+    const check_in_date = isSelectNight
+      ? formatDateSupabase(new Date(date), 18, 0)
+      : formatDateSupabase(new Date(date), 9, 0);
+
+    let check_out_dayOfMonth = 1;
+    if (!isSelectNight) {
+      check_out_dayOfMonth = date.getDay() + timeStay;
+    }
+
+    const lastDayOfMonth = new Date(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      0
+    ).getDate();
+
+    let check_out_month = date.getMonth() + 1;
+    let check_out_year = date.getFullYear();
+    if (check_out_dayOfMonth > lastDayOfMonth) {
+      check_out_dayOfMonth -= lastDayOfMonth;
+      check_out_month += 1;
+      if (check_out_month > 12) {
+        check_out_month = 1;
+        check_out_year += 1;
+      }
+    }
+
+    const check_out_date = isSelectNight
+      ? formatDateSupabase(
+          new Date(
+            check_out_year,
+            check_out_month - 1,
+            check_out_dayOfMonth + 1
+          ),
+          9,
+          0
+        )
+      : formatDateSupabase(
+          new Date(
+            check_out_year,
+            check_out_month - 1,
+            check_out_dayOfMonth + 1
+          ),
+          9,
+          0
+        );
+
     const prepare_data: BodyCreateBooking = {
       user_id: user?.detail?.id ?? "",
       room_id: roomDetail?.id ?? "",
-      check_in_date: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
-      check_out_date: `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`,
+      check_in_date,
+      check_out_date,
       total_price: totalPrice(),
       status: STATUS_BOOKING_TICKET.IN_PROCESS,
     };
 
     let res = await createBooking(prepare_data);
     if (res.success) {
-      router.push({
-        pathname: "/payment",
-        params: { bookingId: res.data.id },
-      });
+      if (res.data) {
+        router.push({
+          pathname: "/payment",
+          params: { bookingId: res.data.id },
+        });
+      } else {
+        Alert.alert("Đặt phòng", res.message);
+      }
     } else {
       Alert.alert("Đặt phòng", res.message);
     }

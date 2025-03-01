@@ -29,7 +29,11 @@ import Icon from "@/assets/icons";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/contexts/AuthContext";
 import Loading from "@/components/Loading";
-import { STATUS_BOOKING_TICKET } from "@/constants";
+import { STATUS_BOOKING_TICKET, STATUS_CHECK_IN_OUT } from "@/constants";
+import {
+  CheckInOutInfo,
+  createOrUpdateCheckInOut,
+} from "@/services/checkInOutService";
 
 const payment = () => {
   const router = useRouter();
@@ -98,13 +102,27 @@ const payment = () => {
       status: STATUS_BOOKING_TICKET.COMPLETED,
     };
 
+    let bodyCheckInOut: CheckInOutInfo = {
+      booking_id: bookingTicket?.id || "",
+      user_id: bookingTicket?.user_id || "",
+      room_id: "",
+      check_in_time: bookingTicket?.check_in_date || "",
+      check_out_time: bookingTicket?.check_out_date || "",
+      employee_id: "Admin[01]",
+      status: STATUS_CHECK_IN_OUT.NOT_CHECK_IN,
+    };
+
     let res = await createPayment(bodyPayment);
     let res2 = await createBooking(bodyBooking);
+    let res3 = await createOrUpdateCheckInOut(bodyCheckInOut);
 
-    if (res.success) {
+    if (res.success || res2.success || res3.success) {
       Alert.alert("Thanh toán", "Thanh toán hoàn tất");
-      router.push("/(tabs)/home");
+      router.push("/(tabs)/checkRoom");
     } else {
+      console.error("Thanh toán - Payment", res.message);
+      console.error("Thanh toán - Booking", res2.message);
+      console.error("Thanh toán - Check In Out", res3.message);
       Alert.alert("Thanh toán", "Thanh toán thất bại");
     }
 
