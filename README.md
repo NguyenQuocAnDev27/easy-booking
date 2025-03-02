@@ -17,7 +17,7 @@ Follow the steps below to get started with the project:
    ```
 - This will show the QR code. You can scan it with your phone to run the app, or run the app in an emulator by pressing command to choose either iOS or Android. These commands will be shown in your terminal.
 
-## 🏞️ UI/UX prototype
+## 🏞️ UI/UX Prototype
 
 ![UI Easy Booking](https://github.com/user-attachments/assets/bf5c90eb-0b7c-4f54-b9f6-03cf93faa80e)
 
