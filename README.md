@@ -17,8 +17,10 @@ Follow the steps below to get started with the project:
    ```
 - This will show the QR code. You can scan it with your phone to run the app, or run the app in an emulator by pressing command to choose either iOS or Android. These commands will be shown in your terminal.
 
-## 🎥 Video Demo
-- Link: 
+## 🏞️ UI/UX prototype
+
+![UI Easy Booking](https://github.com/user-attachments/assets/bf5c90eb-0b7c-4f54-b9f6-03cf93faa80e)
+
 
 ## 📱 Features
 - Auto Show Hotel List: Displays a list of available hotels based on the user’s location or preferences.
