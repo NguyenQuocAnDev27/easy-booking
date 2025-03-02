@@ -118,7 +118,7 @@ const payment = () => {
 
     if (res.success || res2.success || res3.success) {
       Alert.alert("Thanh toán", "Thanh toán hoàn tất");
-      router.push("/(tabs)/checkRoom");
+      router.push("/(tabs)/home");
     } else {
       console.error("Thanh toán - Payment", res.message);
       console.error("Thanh toán - Booking", res2.message);

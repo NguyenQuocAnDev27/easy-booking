@@ -7,6 +7,11 @@ import useCountdown from "@/hooks/useCountdown";
 const CheckOutTimer = ({ checkOut = null }: { checkOut?: Date | null }) => {
   const checkOutTime = checkOut ? checkOut : null;
   const countdown = useCountdown(checkOutTime);
+
+  if (countdown.hours >= 3) {
+    return <></>;
+  }
+
   return (
     <View
       style={{

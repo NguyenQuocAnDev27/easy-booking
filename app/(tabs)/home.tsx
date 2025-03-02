@@ -94,7 +94,7 @@ const home = () => {
   if (loadingFull) {
     return (
       <ScreenWarpper
-        statusBarColor={theme.colors.lightGray2}
+        statusBarColor={theme.colors.primary}
         nightMode={false}
         color={theme.colors.lightGray2}
         autoDismissKeyboard={isKeyboardShow}
@@ -124,7 +124,7 @@ const home = () => {
 
   return (
     <ScreenWarpper
-      statusBarColor="black"
+      statusBarColor={theme.colors.primaryDark}
       nightMode={true}
       color="black"
       autoDismissKeyboard={isKeyboardShow}
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     paddingTop: hp(2),
     paddingBottom: hp(2),
     paddingHorizontal: wp(4),
-    backgroundColor: "black",
+    backgroundColor: theme.colors.primaryDark,
     gap: hp(2),
   },
   sectionTitle: {
