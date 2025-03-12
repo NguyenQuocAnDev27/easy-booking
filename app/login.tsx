@@ -1,5 +1,5 @@
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useRef } from "react";
+import { Alert, Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useRef, useState } from "react";
 import { hp, wp } from "@/helpers/common";
 import { theme } from "@/constants/theme";
 import { useRouter } from "expo-router";
@@ -17,14 +17,18 @@ const login = () => {
   const mailRef = useRef("");
   const passwordRef = useRef("");
   const { loginUser } = useAuth();
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const onLogin = async () => {
+    setLoadingButton(true);
+    Keyboard.dismiss();
     let prepareData: SignInWithPasswordCredentials = {
       email: mailRef.current,
       password: passwordRef.current,
     };
     let { data: {session}, error } = await supabase.auth.signInWithPassword(prepareData);
 
+    setLoadingButton(false);
     // ❌ Error
     if (error) {
       console.log("error", error.message);
@@ -66,7 +70,7 @@ const login = () => {
             onChangeText={(text) => (passwordRef.current = text)}
           />
           {/* button */}
-          <Button text="Đăng nhập" onPress={onLogin} />
+          <Button text="Đăng nhập" onPress={onLogin} loading={loadingButton} />
           {/* footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Chưa có tài khoản!</Text>

@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
@@ -31,6 +32,7 @@
     "expo-haptics": "~14.0.1",
     "expo-image": "~2.0.6",
     "expo-image-picker": "~16.0.6",
+    "expo-linear-gradient": "~14.0.2",
     "expo-linking": "~7.0.5",
     "expo-location": "~18.0.7",
     "expo-media-library": "~17.0.6",
@@ -42,10 +44,12 @@
     "expo-system-ui": "~4.0.8",
     "expo-video": "~2.0.5",
     "expo-web-browser": "~14.0.2",
+    "jest-expo": "~52.0.5",
     "moment": "^2.30.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-maps": "1.18.0",
     "react-native-reanimated": "~3.16.1",
@@ -55,10 +59,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "react-redux": "^9.2.0",
-    "undefined": "@expo/vector-icons/FontAwesome",
-    "jest-expo": "~52.0.5",
-    "expo-linear-gradient": "~14.0.2",
-    "@react-native-community/datetimepicker": "8.2.0"
+    "undefined": "@expo/vector-icons/FontAwesome"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

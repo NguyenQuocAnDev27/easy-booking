@@ -23,6 +23,8 @@ import {
 import RoomCard from "@/components/RoomCard";
 import Loading from "@/components/Loading";
 import { useRouter } from "expo-router";
+import useAsyncStorage, { KEYS_STORAGE } from "@/hooks/useAsyncStorage";
+import { Province } from "@/services/provinceService";
 
 const home = () => {
   const {
@@ -41,6 +43,7 @@ const home = () => {
   const [loadingFull, setLoadingFull] = useState(false);
   const router = useRouter();
   const [isEmptyRooms, setIsEmptyRooms] = useState(false);
+  const [provinces, setProvinces] = useAsyncStorage<Province[]>(KEYS_STORAGE.PROVINCES, []);
 
   const gettingRooms = async (loadingMoreRooms: boolean) => {
     if (!loadingMoreRooms) {

@@ -25,6 +25,7 @@ import Header from "@/components/Header";
 import { uploadFile } from "@/services/fileSerive";
 import { Image } from "expo-image";
 import Loading from "@/components/Loading";
+import useAsyncStorage, { KEYS_STORAGE } from "@/hooks/useAsyncStorage";
 
 const SCREEN_NAME = "Trang Cá Nhân";
 
@@ -33,8 +34,11 @@ const editProfile = () => {
   const router = useRouter();
   const [isKeyboardShow, setIsKeyboardShow] = useState<boolean>(false);
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset | null>(null);
-  console.log(`Image: ${image?.uri}`);
-  const [provinces, setProvinces] = useState<Province[]>([]);
+  // console.log(`Image: ${image?.uri}`);
+  const [provinces, setProvinces] = useAsyncStorage<Province[]>(
+    KEYS_STORAGE.PROVINCES,
+    []
+  );
   const [selectedProvince, setSelectedProvince] = useState<string | null>(
     currentUser?.detail?.address
       ? currentUser?.detail?.address.split(" - ")[0]
@@ -51,15 +55,6 @@ const editProfile = () => {
     currentUser?.detail
   );
   const [loading, setLoading] = useState<boolean>(false);
-
-  const gettingCity = async () => {
-    let res = await getProvinces();
-    if (res.success) {
-      setProvinces(res.data || []);
-    } else {
-      Alert.alert("Trang cá nhân", res.message);
-    }
-  };
 
   const onPickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -123,8 +118,6 @@ const editProfile = () => {
   };
 
   useEffect(() => {
-    gettingCity();
-
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setIsKeyboardShow(true);
     });
@@ -211,7 +204,7 @@ const editProfile = () => {
                       label={`Chọn tỉnh/thành phố`}
                       value={null}
                     />
-                    {provinces.map((province) => (
+                    {provinces?.map((province) => (
                       <Picker.Item
                         style={styles.pickerItem}
                         key={province.code}
@@ -255,7 +248,7 @@ const editProfile = () => {
                           value={null}
                         />
                         {provinces
-                          .find(
+                          ?.find(
                             (province) => province.name === selectedProvince
                           )
                           ?.districts.map((district) => (

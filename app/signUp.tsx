@@ -1,5 +1,12 @@
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useRef } from "react";
+import {
+  Alert,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useRef, useState } from "react";
 import { hp, wp } from "@/helpers/common";
 import { theme } from "@/constants/theme";
 import ScreenWarpper from "@/components/ScreenWrapper";
@@ -17,6 +24,7 @@ const signUp = () => {
   const mailRef = useRef("");
   const passwordRef = useRef("");
   const nameRef = useRef("");
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const onSignUp = async () => {
     if (
@@ -27,6 +35,9 @@ const signUp = () => {
       Alert.alert("Đăng ký", "Vui lòng điền đầy đủ các thông tin");
       return;
     }
+
+    setLoadingButton(true);
+    Keyboard.dismiss();
 
     let prepareData: SignUpWithPasswordCredentials = {
       email: mailRef.current,
@@ -45,6 +56,7 @@ const signUp = () => {
     } = await supabase.auth.signUp(prepareData);
 
     console.log("session", session?.user?.id);
+    setLoadingButton(false);
 
     // ❌ Error
     if (error) {
@@ -91,7 +103,7 @@ const signUp = () => {
             onChangeText={(text) => (passwordRef.current = text)}
           />
           {/* button */}
-          <Button text="Đăng ký" onPress={onSignUp} />
+          <Button text="Đăng ký" onPress={onSignUp} loading={loadingButton} />
           {/* footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Đã có tài khoản!</Text>

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  VirtualizedList,
 } from "react-native";
 import React, { useState } from "react";
 import { hp, wp } from "@/helpers/common";
