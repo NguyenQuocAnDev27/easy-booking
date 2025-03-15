@@ -73,6 +73,8 @@ const waiting = () => {
   };
 
   const gettingCity = async () => {
+    if (provinces?.length || 0 > 0) return;
+    
     let res = await getProvinces();
     if (res.success) {
       setProvinces(res.data || []);

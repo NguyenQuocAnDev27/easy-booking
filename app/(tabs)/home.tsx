@@ -25,6 +25,8 @@ import Loading from "@/components/Loading";
 import { useRouter } from "expo-router";
 import useAsyncStorage, { KEYS_STORAGE } from "@/hooks/useAsyncStorage";
 import { Province } from "@/services/provinceService";
+import { Image as ExpoImage } from "expo-image";
+import GIFs from "@/assets/animations";
 
 const home = () => {
   const {
@@ -41,15 +43,27 @@ const home = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
   const inputRef = useRef(null);
   const [loadingFull, setLoadingFull] = useState(false);
+  const [loadingCriteria, setLoadingCriteria] = useState(true);
+  const [loadingRooms, setLoadingRooms] = useState(true);
   const router = useRouter();
   const [isEmptyRooms, setIsEmptyRooms] = useState(false);
-  const [provinces, setProvinces] = useAsyncStorage<Province[]>(KEYS_STORAGE.PROVINCES, []);
+  const [provinces, setProvinces] = useAsyncStorage<Province[]>(
+    KEYS_STORAGE.PROVINCES,
+    []
+  );
+
+  const gettingsCriteria = () => {
+    setLoadingCriteria(true);
+    setTimeout(() => {
+      setLoadingCriteria(false);
+    }, 500);
+  };
 
   const gettingRooms = async (loadingMoreRooms: boolean) => {
     if (!loadingMoreRooms) {
       return;
     } else {
-      setLoadingFull(true);
+      setLoadingRooms(true);
       goToNextPage();
     }
 
@@ -74,10 +88,11 @@ const home = () => {
       setIsEmptyRooms(true);
     }
 
-    setLoadingFull(false);
+    setLoadingRooms(false);
   };
 
   useEffect(() => {
+    gettingsCriteria();
     console.log(`Your location: ${user?.nowLocation}`);
 
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -129,7 +144,7 @@ const home = () => {
     <ScreenWarpper
       statusBarColor={theme.colors.primaryDark}
       nightMode={true}
-      color="black"
+      color={theme.colors.white}
       autoDismissKeyboard={isKeyboardShow}
     >
       <FlatList
@@ -144,7 +159,7 @@ const home = () => {
           <View>
             <View style={styles.headerContainer}>
               <SearchBar inputRef={inputRef} isKeyboardShow={isKeyboardShow} />
-              <UserOptionsBar />
+              <UserOptionsBar loading={loadingCriteria} />
             </View>
             <View
               style={{
@@ -158,25 +173,8 @@ const home = () => {
               </Text>
             </View>
 
-            {isEmptyRooms && (
-              <View
-                style={{
-                  width: "100%",
-                  height: hp(40),
-                  backgroundColor: theme.colors.lightGray2,
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    padding: 20,
-                    fontSize: hp(1.6),
-                  }}
-                >
-                  Hiện không còn khách sạn nào còn phòng
-                </Text>
-              </View>
-            )}
+            {loadingRooms && <LoadingIndicator />}
+            {isEmptyRooms && <EmptyRoomMessages />}
           </View>
         }
         keyboardShouldPersistTaps="handled"
@@ -191,6 +189,57 @@ const home = () => {
         )}
       />
     </ScreenWarpper>
+  );
+};
+
+const EmptyRoomMessages = () => {
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: hp(40),
+        backgroundColor: theme.colors.lightGray2,
+      }}
+    >
+      <Text
+        style={{
+          textAlign: "center",
+          padding: 20,
+          fontSize: hp(1.6),
+        }}
+      >
+        Hiện không còn khách sạn nào còn phòng
+      </Text>
+    </View>
+  );
+};
+
+const LoadingIndicator = () => {
+  const loadingWidth = 118;
+  const loadingHeight = 119;
+  const newLoadingWidth = 40;
+  const newLoadingHeight = newLoadingWidth / (loadingWidth / loadingHeight);
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors.white,
+        padding: hp(2),
+      }}
+    >
+      <ExpoImage
+        source={GIFs.loading_grid}
+        style={{
+          width: newLoadingWidth,
+          height: newLoadingHeight,
+        }}
+        contentFit="cover"
+        transition={1000}
+      />
+    </View>
   );
 };
 

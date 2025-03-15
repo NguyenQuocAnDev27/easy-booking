@@ -22,6 +22,7 @@ const Favorite = () => {
   const router = useRouter();
   const [loadingMore, setLoadingMore] = useState<boolean>(true);
   const [rooms, setRooms] = useState<FavoriteRoom[]>([]);
+  const [isEmptyRoom, setIsEmptyRoom] = useState(false);
 
   useFocusEffect(() => {
     page = 0;
@@ -38,6 +39,9 @@ const Favorite = () => {
       setRooms((prev) => [...res.data, ...prev]);
       if (res.data?.length ?? 0 < numberRoomReturn) {
         setLoadingMore(false);
+      }
+      if (res.data?.length ?? 0 > 0) {
+        setIsEmptyRoom(true);
       }
     } else {
       Alert.alert("Trang yêu thích", res.message);
@@ -62,7 +66,7 @@ const Favorite = () => {
       <View style={styles.container}>
         <Header title="Danh sách yêu thích" showBackButton={false} />
 
-        {rooms.length == 0 && (
+        {isEmptyRoom && (
           <View style={{ paddingVertical: hp(2), alignItems: "center" }}>
             <Text
               style={{

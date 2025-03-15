@@ -26,6 +26,7 @@ export interface BookingTicket {
     id: string;
     hotel: {
       id: string;
+      name: string;
       acqId: string;
       accountNo: string;
     };

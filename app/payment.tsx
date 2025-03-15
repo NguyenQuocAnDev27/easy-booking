@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import ScreenWarpper from "@/components/ScreenWrapper";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Router, useLocalSearchParams, useRouter } from "expo-router";
 import {
   Bank,
   createPayment,
@@ -34,6 +34,10 @@ import {
   CheckInOutInfo,
   createOrUpdateCheckInOut,
 } from "@/services/checkInOutService";
+import { AppUser } from "@/hooks/authSlice";
+import PaymentHeader from "@/components/PaymentHeader";
+import PaymentInfo from "@/components/PaymentInfo";
+import QRCodeSection from "@/components/QRCodeSection";
 
 const payment = () => {
   const router = useRouter();
@@ -45,7 +49,7 @@ const payment = () => {
   const [bookingTicket, setBookingTicket] = useState<BookingTicket | null>(
     null
   );
-  const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
+  const [loadingPayment, setLoadingPayment] = useState<boolean>(true);
 
   const gettingBanks = async () => {
     let res = await getBanks();
@@ -141,26 +145,7 @@ const payment = () => {
         statusBarColor={theme.colors.primary}
         nightMode={true}
       >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: theme.colors.primary,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              color: theme.colors.white,
-              fontSize: hp(2.2),
-              fontWeight: theme.fonts.semibold,
-              marginBottom: hp(2),
-            }}
-          >
-            Đang Tiến Hành Xác Thực
-          </Text>
-          <Loading size="large" color={theme.colors.white} />
-        </View>
+        <LoadingPaymentIndicator />
       </ScreenWarpper>
     );
   }
@@ -173,409 +158,42 @@ const payment = () => {
     >
       <ScrollView style={[styles.container]}>
         {/* Header */}
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 10,
-              gap: 10,
-            },
-            { marginBottom: 10 },
-          ]}
-        >
-          <View
-            style={{
-              position: "absolute",
-              left: 0,
-            }}
-          >
-            <Pressable
-              onPress={() => router.back()}
-              style={{
-                alignSelf: "flex-start",
-                padding: 5,
-                borderWidth: 1.6,
-                borderColor: theme.colors.white,
-                borderRadius: theme.radius.sm * 99,
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-              }}
-            >
-              <Icon
-                name="arrowLeft"
-                strokeWidth={2}
-                size={24}
-                color={theme.colors.white}
-              />
-            </Pressable>
-          </View>
-          <Text
-            style={{
-              fontSize: hp(2.7),
-              fontWeight: theme.fonts.semibold,
-              color: theme.colors.white,
-            }}
-          >
-            {"Thanh toán"}
-          </Text>
-        </View>
+        <PaymentHeader router={router} />
 
         {/* Ticket */}
-        <View
-          style={{
-            padding: wp(4),
-            marginHorizontal: wp(1),
-            gap: 20,
-            borderWidth: 1,
-            borderColor: theme.colors.primary,
-            borderRadius: theme.radius.md,
-            marginTop: hp(2),
-            backgroundColor: theme.colors.white,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: hp(2),
-                fontWeight: theme.fonts.extraBold,
-                color: theme.colors.primaryDark,
-              }}
-            >
-              Thông tin đặt phòng
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 20,
-              paddingBottom: 20,
-              borderBottomWidth: 1,
-              borderStyle: "dashed",
-              borderColor: theme.colors.lightGray3,
-            }}
-          >
-            {/* logo hotel */}
-            <View
-              style={{
-                backgroundColor: theme.colors.lightGray2,
-                width: 60,
-                height: 60,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: theme.radius.xxl,
-                borderCurve: "continuous",
-              }}
-            >
-              <Icon name="hotel" size={40} color={theme.colors.primaryDark} />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flex: 1,
-              }}
-            >
-              <View>
-                <Text
-                  style={{
-                    fontSize: hp(3),
-                    color: theme.colors.dark,
-                    fontWeight: theme.fonts.medium,
-                  }}
-                >
-                  Saalbach
-                </Text>
-                <View style={{ flexDirection: "row", gap: 5 }}>
-                  <Icon
-                    name="diamond"
-                    size={18}
-                    color={theme.colors.lightGray4}
-                  />
-                  <Text
-                    style={{
-                      color: theme.colors.lightGray4,
-                      fontWeight: theme.fonts.medium,
-                    }}
-                  >
-                    Phổ thông
-                  </Text>
-                </View>
-              </View>
-
-              <View style={{ gap: 5, alignItems: "flex-end" }}>
-                <View style={{ flexDirection: "row", gap: 5 }}>
-                  <Icon name="multiUser" color={theme.colors.dark} />
-                  <Text
-                    style={{
-                      fontSize: hp(2),
-                      fontWeight: theme.fonts.medium,
-                    }}
-                  >
-                    1 người
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    fontSize: hp(2),
-                    fontWeight: theme.fonts.medium,
-                  }}
-                >
-                  1 đêm
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <View
-            style={{
-              gap: 20,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-              }}
-            >
-              <View
-                style={{
-                  padding: 15,
-                  backgroundColor: theme.colors.lightGray2,
-                  borderRadius: theme.radius.xl,
-                  gap: 5,
-                  flex: 1,
-                  marginRight: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: hp(2.4),
-                    fontWeight: theme.fonts.medium,
-                  }}
-                >
-                  28/02/2025
-                </Text>
-                <Text style={{ fontSize: hp(2), color: theme.colors.darkGray }}>
-                  Nhận Phòng
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  padding: 15,
-                  backgroundColor: theme.colors.lightGray2,
-                  borderRadius: theme.radius.xl,
-                  gap: 5,
-                  flex: 1,
-                  marginLeft: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: hp(2.4),
-                    fontWeight: theme.fonts.medium,
-                  }}
-                >
-                  29/02/2025
-                </Text>
-                <Text style={{ fontSize: hp(2), color: theme.colors.darkGray }}>
-                  Trả Phòng
-                </Text>
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  padding: 15,
-                  backgroundColor: theme.colors.lightGray2,
-                  borderRadius: theme.radius.xl,
-                  gap: 5,
-                  flex: 1,
-                  marginRight: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: hp(2.4),
-                    fontWeight: theme.fonts.medium,
-                  }}
-                >
-                  {capitalizeText(user?.detail?.name ?? "")}
-                </Text>
-                <Text style={{ fontSize: hp(2), color: theme.colors.darkGray }}>
-                  Người Đặt
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  padding: 15,
-                  backgroundColor: theme.colors.lightGray2,
-                  borderRadius: theme.radius.xl,
-                  gap: 5,
-                  flex: 1,
-                  marginLeft: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: hp(2.4),
-                    fontWeight: theme.fonts.medium,
-                  }}
-                >
-                  {user?.detail?.phone}
-                </Text>
-                <Text style={{ fontSize: hp(2), color: theme.colors.darkGray }}>
-                  SĐT Liên Lạc
-                </Text>
-              </View>
-            </View>
-
-            <View>
-              <View
-                style={{
-                  width: "100%",
-                  paddingVertical: hp(2),
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderTopWidth: 1,
-                  borderStyle: "dashed",
-                  borderColor: theme.colors.lightGray3,
-                }}
-              >
-                <View
-                  style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingHorizontal: wp(2),
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      gap: 5,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Icon
-                      name="dollarCircle"
-                      color={theme.colors.primary}
-                      size={30}
-                    />
-                    <Text
-                      style={{
-                        fontSize: hp(2),
-                        color: theme.colors.darkGray,
-                      }}
-                    >
-                      Thành Tiền
-                    </Text>
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: hp(2.6),
-                      fontWeight: theme.fonts.extraBold,
-                    }}
-                  >
-                    {formatVND(bookingTicket?.total_price || 0)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
+        <PaymentInfo user={user} bookingTicket={bookingTicket} />
 
         {/* qr code */}
-        <View
-          style={{
-            padding: wp(4),
-            marginHorizontal: wp(1),
-            gap: 20,
-            borderWidth: 1,
-            borderColor: theme.colors.primary,
-            borderRadius: theme.radius.md,
-            marginTop: hp(2),
-            backgroundColor: theme.colors.white,
-            alignItems: "center",
-          }}
-        >
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <Text
-              style={{
-                fontSize: hp(2),
-                fontWeight: theme.fonts.extraBold,
-                color: theme.colors.primaryDark,
-              }}
-            >
-              Quét Mã Dưới Đây
-            </Text>
-            <Icon name="squareArrowDown" color={theme.colors.primaryDark} />
-          </View>
-
-          {/* qrcode */}
-          <View style={{ paddingTop: 20 }}>
-            <Image
-              source={{ uri: imageUri || undefined }}
-              style={{
-                width: 250,
-                height: 250,
-                resizeMode: "contain",
-              }}
-            />
-          </View>
-          {/* confirm scan complete */}
-          <TouchableOpacity
-            onPress={onConfirmPayment}
-            style={{
-              marginVertical: hp(2),
-            }}
-          >
-            <View
-              style={{
-                width: "100%",
-                paddingVertical: hp(2),
-                paddingHorizontal: wp(10),
-                backgroundColor: theme.colors.primaryDark,
-                borderRadius: theme.radius.xxl * 99,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: hp(2.4),
-                  fontWeight: theme.fonts.bold,
-                  color: theme.colors.white,
-                }}
-              >
-                Xác Nhận Đã Thanh Toán
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <QRCodeSection uri={imageUri} onPress={onConfirmPayment} />
 
         <View style={{ height: hp(10) }}></View>
       </ScrollView>
     </ScreenWarpper>
+  );
+};
+
+const LoadingPaymentIndicator = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.primary,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text
+        style={{
+          color: theme.colors.white,
+          fontSize: hp(2.2),
+          fontWeight: theme.fonts.semibold,
+          marginBottom: hp(2),
+        }}
+      >
+        Đang Tiến Hành Xác Thực
+      </Text>
+      <Loading size="large" color={theme.colors.white} />
+    </View>
   );
 };
 

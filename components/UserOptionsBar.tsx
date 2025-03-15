@@ -10,8 +10,10 @@ import {
 import React from "react";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/helpers/common";
+import GIFs from "@/assets/animations";
+import { Image as ExpoImage } from "expo-image";
 
-const UserOptionsBar = () => {
+const UserOptionsBar = ({ loading = false }: { loading: boolean }) => {
   const options: { id: string; name: string; uri: string }[] = [
     {
       id: "Option_0",
@@ -34,6 +36,13 @@ const UserOptionsBar = () => {
       uri: require("../assets/images/Island.png"),
     },
   ];
+
+  const loadingWidth = 170;
+  const loadingHeight = 66;
+
+  const newLoadingWidth = 80;
+  const newLoadingHeight = newLoadingWidth / (loadingWidth / loadingHeight);
+
   return (
     <View
       style={{
@@ -65,19 +74,37 @@ const UserOptionsBar = () => {
           </Text>
         </Pressable>
       </View>
-      <ScrollView
-        style={{ width: "100%", paddingHorizontal: 5, paddingBottom: 10, }}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      >
-        {options.map((option) => (
-          <OptionItem
-            key={option.id}
-            title={option.name}
-            uri={option.uri as ImageSourcePropType}
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: hp(2),
+          }}
+        >
+          <ExpoImage
+            source={GIFs.loading_flow}
+            style={{ width: newLoadingWidth, height: newLoadingHeight }}
+            contentFit="cover"
+            transition={1000}
           />
-        ))}
-      </ScrollView>
+        </View>
+      ) : (
+        <ScrollView
+          style={{ width: "100%", paddingHorizontal: 5, paddingBottom: 10 }}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          {options.map((option) => (
+            <OptionItem
+              key={option.id}
+              title={option.name}
+              uri={option.uri as ImageSourcePropType}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };

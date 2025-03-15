@@ -135,8 +135,22 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   };
 
   const getTextColorDay = (day: number, month: number) => {
-    if (checkInDate === null) return "black";
-    if (checkOutDate === null) return "black";
+    if (checkInDate === null || checkOutDate === null) {
+      const firstDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      ).getDate();
+      const lastDay = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      ).getDate();
+      if (day >= firstDay && day <= lastDay && month === currentMonth) {
+        return "black";
+      }
+      return theme.colors.gray;
+    }
 
     const dayIn = checkInDate.getDate();
     const dayOut = checkOutDate.getDate();
@@ -170,7 +184,10 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   };
 
   const getColorIconLeft = () => {
-    if (checkInDate === null) return theme.colors.darkGray;
+    if (checkInDate === null) {
+      if (currentMonth > today.getMonth()) return theme.colors.primary;
+      return theme.colors.darkGray;
+    }
     const monthIn = checkInDate?.getMonth();
     const yearIn = checkInDate?.getFullYear();
     if (year > yearIn) return theme.colors.primary;
