@@ -46,7 +46,7 @@ const SERVICE_NAME = "Room Service";
 export const numberRoomReturn = 5;
 
 export interface apiGetRoomBody {
-  user_id: string;
+  user_id: string | null;
   page: number;
   location?: string | null;
 }
@@ -57,6 +57,19 @@ export const getRooms = async ({
   location = null,
 }: apiGetRoomBody): Promise<APIResponse<Room[]>> => {
   const taskName = "getting rooms";
+
+  if(user_id === null) {
+    const error = "User is not authenticated!";
+    console.warn(
+      `${SERVICE_NAME} || Error while ${taskName} | Error: ${error}`
+    );
+    return {
+      success: false,
+      message: `Error while ${taskName}`,
+      data: null,
+    };
+  }
+
   try {
     let query = supabase
       .from("rooms")

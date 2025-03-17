@@ -49,7 +49,7 @@ const payment = () => {
   const [bookingTicket, setBookingTicket] = useState<BookingTicket | null>(
     null
   );
-  const [loadingPayment, setLoadingPayment] = useState<boolean>(true);
+  const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
 
   const gettingBanks = async () => {
     let res = await getBanks();

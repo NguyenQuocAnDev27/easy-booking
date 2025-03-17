@@ -44,7 +44,7 @@ const home = () => {
   const inputRef = useRef(null);
   const [loadingFull, setLoadingFull] = useState(false);
   const [loadingCriteria, setLoadingCriteria] = useState(true);
-  const [loadingRooms, setLoadingRooms] = useState(true);
+  const [loadingRooms, setLoadingRooms] = useState(false);
   const router = useRouter();
   const [isEmptyRooms, setIsEmptyRooms] = useState(false);
   const [provinces, setProvinces] = useAsyncStorage<Province[]>(
@@ -67,14 +67,23 @@ const home = () => {
       goToNextPage();
     }
 
-    let userLocation = user?.nowLocation ?? null;
-    let user_id = user?.detail?.id ?? "";
+    let userLocation = null;
+    if(user?.nowLocation?.length === 0 || user?.nowLocation?.length === null) {
+      userLocation = user?.nowLocation
+    }
 
+    let user_id = null;
+    if(user?.detail?.id) {
+      user_id = user.detail.id
+    }
+
+    console.log(`Prepare data: id: ${user_id} | location: ${userLocation} | page: ${page}`)
     let res = await getRooms({
       user_id: user_id,
       page: page,
       location: userLocation,
     });
+
     if (res.success) {
       console.log(`Total rooms: ${res.data?.length}`);
       if (res.data?.length ?? 0 > 0) {

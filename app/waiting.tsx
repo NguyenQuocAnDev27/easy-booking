@@ -65,7 +65,7 @@ const waiting = () => {
         updateNowLocation("");
       }
     } catch (error) {
-      console.error("Error fetching location: ", error);
+      console.log("Error fetching location: ", error);
       updateNowLocation("");
       Alert.alert("Error", "Unable to fetch your location. Please try again.");
     }

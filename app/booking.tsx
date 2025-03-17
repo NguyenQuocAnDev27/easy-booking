@@ -84,9 +84,9 @@ const booking = () => {
       ? formatDateSupabase(new Date(date), 18, 0)
       : formatDateSupabase(new Date(date), 9, 0);
 
-    let check_out_dayOfMonth = 1;
+    let check_out_dayOfMonth = date.getDate();
     if (!isSelectNight) {
-      check_out_dayOfMonth = date.getDay() + timeStay;
+      check_out_dayOfMonth = date.getDate() + timeStay;
     }
 
     const lastDayOfMonth = new Date(
@@ -97,6 +97,7 @@ const booking = () => {
 
     let check_out_month = date.getMonth() + 1;
     let check_out_year = date.getFullYear();
+    
     if (check_out_dayOfMonth > lastDayOfMonth) {
       check_out_dayOfMonth -= lastDayOfMonth;
       check_out_month += 1;
@@ -106,25 +107,11 @@ const booking = () => {
       }
     }
 
-    const check_out_date = isSelectNight
-      ? formatDateSupabase(
-          new Date(
-            check_out_year,
-            check_out_month - 1,
-            check_out_dayOfMonth + 1
-          ),
-          9,
-          0
-        )
-      : formatDateSupabase(
-          new Date(
-            check_out_year,
-            check_out_month - 1,
-            check_out_dayOfMonth + 1
-          ),
-          9,
-          0
-        );
+    const check_out_date = formatDateSupabase(
+      new Date(check_out_year, check_out_month - 1, check_out_dayOfMonth + 1),
+      9,
+      0
+    );
 
     const prepare_data: BodyCreateBooking = {
       user_id: user?.detail?.id ?? "",
